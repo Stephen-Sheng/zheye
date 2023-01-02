@@ -37,8 +37,14 @@
     "vite": "^4.0.0",
     "vue-tsc": "^1.0.12"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
     "*.{vue,js,jsx,cjs,mjs,ts,tsx,cts,mts}": "eslint --cache --fix",
-    "*.{js,css,md}": "prettier --write"
+    "*.{js,css,md}": "prettier --write",
+    "**/*": "prettier --write --ignore-unknown"
   }
 }

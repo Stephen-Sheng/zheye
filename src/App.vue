@@ -2,6 +2,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import ColumnList from "./components/ColumnList.vue";
 import type { ColumnProps } from "./components/ColumnList.vue";
+import GlobalHeader from "./components/GlobalHeader.vue";
+import type { UserProps } from "./components/GlobalHeader.vue";
 
 const testData: ColumnProps[] = [
   {
@@ -39,9 +41,15 @@ const testData: ColumnProps[] = [
       "http://vue-maker.oss-cn-hangzhou.aliyuncs.com/vue-marker/5ee22dd58b3c4520912b9470.jpg?x-oss-process=image/resize,m_pad,h_100,w_100",
   },
 ];
+const currentUser: UserProps = {
+  isLogin: true,
+  name: "Yutong",
+  id: 1,
+};
 </script>
 
 <template>
+  <GlobalHeader :user="currentUser" />
   <div class="container">
     <ColumnList :list="testData" />
   </div>

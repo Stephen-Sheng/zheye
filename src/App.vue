@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import "bootstrap/dist/css/bootstrap.min.css";
-import ColumnList from "./components/ColumnList.vue";
-import type { ColumnProps } from "./components/ColumnList.vue";
-import GlobalHeader from "./components/GlobalHeader.vue";
-import type { UserProps } from "./components/GlobalHeader.vue";
+import ColumnList from "@/components/ColumnList.vue";
+import type { ColumnProps } from "@/components/ColumnList.vue";
+import GlobalHeader from "@/components/GlobalHeader.vue";
+import type { UserProps } from "@/components/GlobalHeader.vue";
 
 const testData: ColumnProps[] = [
   {

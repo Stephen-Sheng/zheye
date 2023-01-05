@@ -13,13 +13,17 @@ const user = reactive(props.user);
 
 <template>
   <nav class="navbar navbar-dark bg-primary justify-content-between mb-4 px-4">
-    <a class="navbar-brand" href="#">者也专栏</a>
+    <RouterLink class="navbar-brand" to="/">者也专栏</RouterLink>
     <ul v-if="!user.isLogin" class="list-inline mb-0">
       <li class="list-inline-item">
-        <a href="#" class="btn btn-outline-light my-2">登录</a>
+        <RouterLink to="/login" class="btn btn-outline-light my-2"
+          >登录</RouterLink
+        >
       </li>
       <li class="list-inline-item">
-        <a href="#" class="btn btn-outline-light my-2">注册</a>
+        <RouterLink to="/login" class="btn btn-outline-light my-2"
+          >注册</RouterLink
+        >
       </li>
     </ul>
     <ul v-else class="list-inline mb-0">

@@ -41,12 +41,8 @@ const onFormSubmit = (result: boolean) => {
         :rules="passwordRules"
       />
     </div>
-    <div class="mb-3 form-check">
-      <input type="checkbox" class="form-check-input" id="exampleCheck1" />
-      <label class="form-check-label" for="exampleCheck1">Check me out</label>
-    </div>
     <template #submit>
-      <span class="btn btn-danger"> Submit</span>
+      <span class="btn btn-primary"> Submit</span>
     </template>
   </ValidateForm>
 </template>

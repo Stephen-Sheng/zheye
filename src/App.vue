@@ -2,6 +2,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import GlobalHeader from "@/components/GlobalHeader.vue";
 import type { UserProps } from "@/components/GlobalHeader.vue";
+import CustomForm from "./components/CustomForm.vue";
 
 // const testData: ColumnProps[] = [
 //   {

@@ -1,3 +1,12 @@
+<script setup lang="ts">
+import { useStore } from "vuex";
+import ColumnList from "@/components/ColumnList.vue";
+import type { GlobalDataProps } from "@/store";
+import { computed } from "vue";
+const store = useStore<GlobalDataProps>();
+const list = computed(() => store.state.columns);
+</script>
+
 <template>
   <div class="home-page">
     <section class="py-5 text-center container">
@@ -15,11 +24,3 @@
     <column-list :list="list"></column-list>
   </div>
 </template>
-
-<script setup lang="ts">
-import { testData } from "@/utils";
-import ColumnList from "@/components/ColumnList.vue";
-import { ref } from "vue";
-
-const list = ref(testData);
-</script>

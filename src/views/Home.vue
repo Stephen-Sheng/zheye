@@ -2,9 +2,12 @@
 import { useStore } from "vuex";
 import ColumnList from "@/components/ColumnList.vue";
 import type { GlobalDataProps } from "@/store";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 const store = useStore<GlobalDataProps>();
 const list = computed(() => store.state.columns);
+onMounted(() => {
+  store.dispatch("fetchColumns");
+});
 </script>
 
 <template>

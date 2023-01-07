@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import columnImg from "@/assets/column.jpeg";
+import type { ImageProps } from "@/store";
 
 export interface ColumnProps {
-  id: number;
+  _id: string;
   title: string;
-  avatar?: string;
+  avatar?: ImageProps;
   description: string;
 }
 const props = defineProps<{ list: ColumnProps[] }>();
 const columnList = computed(() => {
   return props.list.map((column) => {
     if (!column.avatar) {
-      column.avatar = columnImg;
+      column.avatar = {
+        url: columnImg,
+      };
+    } else {
+      column.avatar.url =
+        column.avatar.url + "?x-oss-process=image/resize,m_pad,h_50,w_50";
     }
     return column;
   });
@@ -21,18 +27,18 @@ const columnList = computed(() => {
 
 <template>
   <div class="row">
-    <div v-for="column in columnList" :key="column.id" class="col-4 mb-4">
+    <div v-for="column in columnList" :key="column._id" class="col-4 mb-4">
       <div class="card h-100 shadow-sm">
         <div class="card-body text-center">
           <img
-            :src="column.avatar"
+            :src="column.avatar?.url"
             :alt="column.title"
-            class="rounded-circle border border-light w-25 my-3"
+            class="rounded-circle border border-light my-3"
           />
           <h5 class="card-title">{{ column.title }}</h5>
           <p class="card-text text-start">{{ column.description }}</p>
           <RouterLink
-            :to="`/column/${column.id}`"
+            :to="`/column/${column._id}`"
             class="btn btn-outline-primary"
             >进入专栏</RouterLink
           >
@@ -42,4 +48,9 @@ const columnList = computed(() => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.card-body img {
+  width: 50px;
+  height: 50px;
+}
+</style>

@@ -4,6 +4,7 @@ import GlobalHeader from "@/components/GlobalHeader.vue";
 import { useStore } from "vuex";
 import type { GlobalDataProps } from "./store";
 import { computed } from "vue";
+import CustomLoader from "./components/CustomLoader.vue";
 const store = useStore<GlobalDataProps>();
 const currentUser = computed(() => store.state.user);
 const isLoading = computed(() => store.state.loading);
@@ -12,7 +13,11 @@ const isLoading = computed(() => store.state.loading);
 <template>
   <global-header :user="currentUser"></global-header>
   <div class="container">
-    <h1 v-if="isLoading">Loading...</h1>
+    <CustomLoader
+      v-if="isLoading"
+      text="Loading..."
+      background="rgba(0,0,0,0.8)"
+    />
     <router-view> </router-view>
   </div>
   <footer class="text-center py-4 text-secondary bg-light mt-6">

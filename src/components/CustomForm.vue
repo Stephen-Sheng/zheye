@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import type { GlobalDataProps } from "@/store";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 import ValidateForm from "./ValidateForm.vue";
 import type { RulesProp } from "./ValidateInput.vue";
 import ValidateInput from "./ValidateInput.vue";
-
+const store = useStore<GlobalDataProps>();
 const router = useRouter();
 const emailRules: RulesProp = [
   { type: "required", message: "No empty email" },
@@ -18,7 +20,10 @@ const passwordRules: RulesProp = [
 const passwordVal = ref("123456");
 const inputRef = ref<any>();
 const onFormSubmit = (result: boolean) => {
-  if (result) router.push("/column/1");
+  if (result) {
+    router.push("/");
+    store.commit("login");
+  }
 };
 </script>
 

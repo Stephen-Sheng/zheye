@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { testData, testPosts } from "@/utils";
 import PostList from "@/components/PostList.vue";
+import { useStore } from "vuex";
+import type { GlobalDataProps } from "@/store";
+import { computed } from "vue";
+const store = useStore<GlobalDataProps>();
 const route = useRoute();
 const currentId = +route.params.id;
-const column = testData.find((item) => item.id === currentId);
-const list = testPosts.filter((post) => post.columnId === currentId);
+const column = computed(() => store.getters.getColumnById(currentId));
+const list = computed(() => store.getters.getPostsByCid(currentId));
 </script>
 
 <template>

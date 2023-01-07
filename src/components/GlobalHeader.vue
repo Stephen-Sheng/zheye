@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from "vue";
+import { computed } from "vue";
 import DropdownMenu from "@/components/DropdownMenu.vue";
 import DropdownItem from "./DropdownItem.vue";
 export interface UserProps {
@@ -8,7 +8,7 @@ export interface UserProps {
   id?: number;
 }
 const props = defineProps<{ user: UserProps }>();
-const user = reactive(props.user);
+const user = computed(() => props.user);
 </script>
 
 <template>

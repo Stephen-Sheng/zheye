@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import "bootstrap/dist/css/bootstrap.min.css";
 import GlobalHeader from "@/components/GlobalHeader.vue";
-import type { UserProps } from "@/components/GlobalHeader.vue";
-const currentUser: UserProps = {
-  isLogin: false,
-  name: "Yutong",
-  id: 1,
-};
+import { useStore } from "vuex";
+import type { GlobalDataProps } from "./store";
+import { computed } from "vue";
+const store = useStore<GlobalDataProps>();
+const currentUser = computed(() => store.state.user);
 </script>
 
 <template>

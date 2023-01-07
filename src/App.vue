@@ -6,11 +6,13 @@ import type { GlobalDataProps } from "./store";
 import { computed } from "vue";
 const store = useStore<GlobalDataProps>();
 const currentUser = computed(() => store.state.user);
+const isLoading = computed(() => store.state.loading);
 </script>
 
 <template>
   <global-header :user="currentUser"></global-header>
   <div class="container">
+    <h1 v-if="isLoading">Loading...</h1>
     <router-view> </router-view>
   </div>
   <footer class="text-center py-4 text-secondary bg-light mt-6">

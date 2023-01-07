@@ -3,12 +3,19 @@ import { useRoute } from "vue-router";
 import PostList from "@/components/PostList.vue";
 import { useStore } from "vuex";
 import type { GlobalDataProps } from "@/store";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
+import type { ColumnProps } from "@/components/ColumnList.vue";
 const store = useStore<GlobalDataProps>();
 const route = useRoute();
-const currentId = +route.params.id;
-const column = computed(() => store.getters.getColumnById(currentId));
+const currentId = route.params.id;
+const column = computed<ColumnProps>(() =>
+  store.getters.getColumnById(currentId)
+);
 const list = computed(() => store.getters.getPostsByCid(currentId));
+onMounted(() => {
+  store.dispatch("fetchColumn", currentId);
+  store.dispatch("fetchPosts", currentId);
+});
 </script>
 
 <template>
@@ -19,9 +26,9 @@ const list = computed(() => store.getters.getPostsByCid(currentId));
     >
       <div class="col-3 text-center">
         <img
-          :src="column.avatar"
+          :src="column.avatar?.url"
           :alt="column.title"
-          class="rounded-circle border"
+          class="rounded-circle border w-75"
         />
       </div>
       <div class="col-9">

@@ -36,6 +36,7 @@ const onFormSubmit = (result: boolean) => {
         placeholder="请输入邮箱地址"
         v-model="emailVal"
         :rules="emailRules"
+        tag="input"
       />
     </div>
     <div class="mb-3">
@@ -46,6 +47,7 @@ const onFormSubmit = (result: boolean) => {
         placeholder="请输入密码"
         v-model="passwordVal"
         :rules="passwordRules"
+        tag="input"
       />
     </div>
     <template #submit>

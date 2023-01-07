@@ -11,10 +11,15 @@ export interface RuleProp {
   type: "required" | "email";
   message: string;
 }
+export type TagType = "input" | "textarea";
 export type RulesProp = RuleProp[];
 export type ClearFunc = () => void;
 
-const props = defineProps<{ rules: RulesProp; modelValue: string }>();
+const props = defineProps<{
+  rules: RulesProp;
+  modelValue: string;
+  tag: TagType;
+}>();
 const emit = defineEmits<{
   (e: "update:modelValue", targetVal: string): void;
   (e: "reset"): void;
@@ -65,6 +70,16 @@ defineExpose({ validateInput });
 <template>
   <div class="validate-input-container pb-3">
     <input
+      v-if="tag !== 'textarea'"
+      v-bind="$attrs"
+      :class="{ 'is-invalid': inputRef.error }"
+      class="form-control"
+      :value="inputRef.val"
+      @input="updateValue"
+      @blur="validateInput"
+    />
+    <textarea
+      v-else
       v-bind="$attrs"
       :class="{ 'is-invalid': inputRef.error }"
       class="form-control"

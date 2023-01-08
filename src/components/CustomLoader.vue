@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import { onUnmounted } from "vue";
+import useDOMCreate from "@/hooks/useDOMCreate";
 
 defineProps<{ text?: string; background?: string }>();
-const node = document.createElement("div");
-node.id = "back";
-document.body.appendChild(node);
-onUnmounted(() => {
-  document.body.removeChild(node);
-});
+useDOMCreate("back");
 </script>
 
 <template>

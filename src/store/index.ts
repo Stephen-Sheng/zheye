@@ -11,6 +11,7 @@ export interface GlobalDataProps {
   user: UserProps;
   loading: boolean;
   token: string;
+  error: GlobalErrorProps;
 }
 export interface ImageProps {
   _id?: string;
@@ -48,6 +49,7 @@ const store = createStore<GlobalDataProps>({
     },
     loading: false,
     token: localStorage.getItem("token") || "",
+    error: { status: false },
   },
   mutations: {
     // login(state) {
@@ -70,6 +72,9 @@ const store = createStore<GlobalDataProps>({
     },
     setLoading(state, status) {
       state.loading = status;
+    },
+    setError(state, e: GlobalErrorProps) {
+      state.error = e;
     },
     login(state, rawData) {
       const { token } = rawData.data;
@@ -109,5 +114,10 @@ const store = createStore<GlobalDataProps>({
     },
   },
 });
+
+export interface GlobalErrorProps {
+  status: boolean;
+  message?: string;
+}
 
 export default store;

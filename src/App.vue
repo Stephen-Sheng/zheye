@@ -3,15 +3,25 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import GlobalHeader from "@/components/GlobalHeader.vue";
 import { useStore } from "vuex";
 import type { GlobalDataProps } from "./store";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, watch } from "vue";
 import CustomLoader from "./components/CustomLoader.vue";
-import Message from "./components/Message.vue";
 import axios from "axios";
+import createMessage from "./components/createMessage";
 const store = useStore<GlobalDataProps>();
 const currentUser = computed(() => store.state.user);
 const isLoading = computed(() => store.state.loading);
 const token = computed(() => store.state.token);
 const error = computed(() => store.state.error);
+
+watch(
+  () => error.value.status,
+  () => {
+    const { status, message } = error.value;
+    if (status && message) {
+      createMessage("error", message);
+    }
+  }
+);
 onMounted(() => {
   if (!currentUser.value.isLogin && token.value) {
     axios.defaults.headers.common.Authorization = `Bearer ${token.value}`;
@@ -23,11 +33,6 @@ onMounted(() => {
 <template>
   <global-header :user="currentUser"></global-header>
   <div class="container">
-    <Message
-      v-if="error.status"
-      type="error"
-      :message="(error.message as string)"
-    />
     <CustomLoader
       v-if="isLoading"
       text="Loading..."

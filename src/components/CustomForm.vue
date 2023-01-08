@@ -6,6 +6,7 @@ import { useStore } from "vuex";
 import ValidateForm from "./ValidateForm.vue";
 import type { RulesProp } from "./ValidateInput.vue";
 import ValidateInput from "./ValidateInput.vue";
+import createMessage from "./createMessage";
 const store = useStore<GlobalDataProps>();
 const router = useRouter();
 const emailRules: RulesProp = [
@@ -24,9 +25,9 @@ const onFormSubmit = (result: boolean) => {
     const payload = { email: emailVal.value, password: passwordVal.value };
     store
       .dispatch("loginAndFetch", payload)
-      .then((data) => {
-        console.log(data);
-        router.push("/");
+      .then(() => {
+        createMessage("success", "登录成功！");
+        setTimeout(() => router.push("/"), 1000);
       })
       .catch((e) => {
         console.log(e);

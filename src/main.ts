@@ -17,6 +17,8 @@ axios.interceptors.request.use((config) => {
 });
 axios.interceptors.request.use((config) => {
   store.commit("setLoading", true);
+  store.commit("setError", { status: false });
+
   return config;
 });
 axios.interceptors.response.use(
@@ -25,7 +27,6 @@ axios.interceptors.response.use(
     return config;
   },
   (e) => {
-    console.log(e.response);
     const { error } = e.response.data;
     store.commit("setError", { status: true, message: error });
     store.commit("setLoading", false);

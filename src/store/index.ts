@@ -10,6 +10,7 @@ export interface GlobalDataProps {
   posts: PostProps[];
   user: UserProps;
   loading: boolean;
+  token: string;
 }
 export interface ImageProps {
   _id?: string;
@@ -24,6 +25,18 @@ const getAndCommit = async (
 ) => {
   const { data } = await axios.get(url);
   commit(mutationName, data);
+  return data;
+};
+
+const postAndCommit = async (
+  url: string,
+  payload: any,
+  mutationName: string,
+  commit: Commit
+) => {
+  const { data } = await axios.post(url, payload);
+  commit(mutationName, data);
+  return data;
 };
 
 const store = createStore<GlobalDataProps>({
@@ -31,16 +44,15 @@ const store = createStore<GlobalDataProps>({
     columns: [],
     posts: [],
     user: {
-      isLogin: true,
-      name: "Yutong",
-      columnId: 1,
+      isLogin: false,
     },
     loading: false,
+    token: localStorage.getItem("token") || "",
   },
   mutations: {
-    login(state) {
-      state.user = { ...state.user, isLogin: true, name: "Yutong" };
-    },
+    // login(state) {
+    //   state.user = { ...state.user, isLogin: true, name: "Yutong" };
+    // },
     createPost(state, newPost) {
       state.posts.push(newPost);
     },
@@ -53,8 +65,17 @@ const store = createStore<GlobalDataProps>({
     fetchPosts(state, rawData) {
       state.posts = rawData.data.list;
     },
+    fetchCurrentUser(state, rawData) {
+      state.user = { isLogin: true, ...rawData.data };
+    },
     setLoading(state, status) {
       state.loading = status;
+    },
+    login(state, rawData) {
+      const { token } = rawData.data;
+      state.token = token;
+      localStorage.setItem("token", token);
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     },
   },
   actions: {
@@ -66,6 +87,17 @@ const store = createStore<GlobalDataProps>({
     },
     fetchPosts({ commit }, cid) {
       getAndCommit(`/columns/${cid}/posts`, "fetchPosts", commit);
+    },
+    fetchCurrentUser({ commit }) {
+      getAndCommit("/user/current", "fetchCurrentUser", commit);
+    },
+    login({ commit }, payload) {
+      return postAndCommit("/user/login", payload, "login", commit);
+    },
+    loginAndFetch({ dispatch }, loginData) {
+      return dispatch("login", loginData).then(() => {
+        return dispatch("fetchCurrentUser");
+      });
     },
   },
   getters: {

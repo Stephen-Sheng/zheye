@@ -4,9 +4,10 @@ import DropdownMenu from "@/components/DropdownMenu.vue";
 import DropdownItem from "./DropdownItem.vue";
 export interface UserProps {
   isLogin: boolean;
-  name?: string;
-  id?: number;
-  columnId?: number;
+  nickName?: string;
+  _id?: string;
+  column?: string;
+  email?: string;
 }
 const props = defineProps<{ user: UserProps }>();
 const user = computed(() => props.user);
@@ -29,7 +30,7 @@ const user = computed(() => props.user);
     </ul>
     <ul v-else class="list-inline mb-0">
       <li class="list-inline-item">
-        <DropdownMenu :title="user.name">
+        <DropdownMenu :title="user.nickName">
           <DropdownItem>
             <RouterLink class="dropdown-item" to="/create">新建文章</RouterLink>
           </DropdownItem>

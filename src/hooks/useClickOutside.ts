@@ -1,4 +1,10 @@
-import { ref, onMounted, onUnmounted } from "vue";
+/*
+ * @Author: Yutong Sheng
+ * @Date: 2023-01-08 10:57:46
+ * @Last Modified by: Yutong Sheng
+ * @Last Modified time: 2023-01-08 10:58:07
+ */
+import { ref, onMounted, onUnmounted, type Ref } from "vue";
 
 const useClickOutside = (elementRef: Ref<null | HTMLElement>) => {
   const isClickOutside = ref(false);

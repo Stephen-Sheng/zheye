@@ -3,11 +3,31 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import GlobalHeader from "@/components/GlobalHeader.vue";
 import { useStore } from "vuex";
 import type { GlobalDataProps } from "./store";
-import { computed } from "vue";
+import { computed, onMounted, watch } from "vue";
 import CustomLoader from "./components/CustomLoader.vue";
+import axios from "axios";
+import createMessage from "./components/createMessage";
 const store = useStore<GlobalDataProps>();
 const currentUser = computed(() => store.state.user);
 const isLoading = computed(() => store.state.loading);
+const token = computed(() => store.state.token);
+const error = computed(() => store.state.error);
+
+watch(
+  () => error.value.status,
+  () => {
+    const { status, message } = error.value;
+    if (status && message) {
+      createMessage("error", message, 2000);
+    }
+  }
+);
+onMounted(() => {
+  if (!currentUser.value.isLogin && token.value) {
+    axios.defaults.headers.common.Authorization = `Bearer ${token.value}`;
+    store.dispatch("fetchCurrentUser");
+  }
+});
 </script>
 
 <template>

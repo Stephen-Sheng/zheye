@@ -2,14 +2,26 @@
 import { computed } from "vue";
 import DropdownMenu from "@/components/DropdownMenu.vue";
 import DropdownItem from "./DropdownItem.vue";
+import { useStore } from "vuex";
+import type { GlobalDataProps } from "@/store";
+import { useRouter } from "vue-router";
+import createMessage from "./createMessage";
 export interface UserProps {
   isLogin: boolean;
-  name?: string;
-  id?: number;
-  columnId?: number;
+  nickName?: string;
+  _id?: string;
+  column?: string;
+  email?: string;
 }
+const store = useStore<GlobalDataProps>();
+const router = useRouter();
 const props = defineProps<{ user: UserProps }>();
 const user = computed(() => props.user);
+const logout = () => {
+  store.commit("logout");
+  createMessage("success", "已登出 正在跳转首页", 2000);
+  setTimeout(() => router.push("/"), 1000);
+};
 </script>
 
 <template>
@@ -29,7 +41,7 @@ const user = computed(() => props.user);
     </ul>
     <ul v-else class="list-inline mb-0">
       <li class="list-inline-item">
-        <DropdownMenu :title="user.name">
+        <DropdownMenu :title="user.nickName">
           <DropdownItem>
             <RouterLink class="dropdown-item" to="/create">新建文章</RouterLink>
           </DropdownItem>
@@ -37,7 +49,9 @@ const user = computed(() => props.user);
             ><a class="dropdown-item" href="#">编辑资料</a></DropdownItem
           >
           <DropdownItem
-            ><a class="dropdown-item" href="#">退出登录</a></DropdownItem
+            ><a class="dropdown-item" href="#" @click.prevent="logout"
+              >退出登录</a
+            ></DropdownItem
           >
         </DropdownMenu>
       </li>

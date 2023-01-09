@@ -8,8 +8,9 @@ export default {
 import { onMounted, reactive } from "vue";
 import { emitter } from "@/utils/index";
 export interface RuleProp {
-  type: "required" | "email";
+  type: "required" | "email" | "custom";
   message: string;
+  validator?: () => boolean;
 }
 export type TagType = "input" | "textarea";
 export type RulesProp = RuleProp[];
@@ -46,6 +47,9 @@ const validateInput = () => {
           break;
         case "email":
           passed = emailReg.test(inputRef.val);
+          break;
+        case "custom":
+          passed = rule.validator ? rule.validator() : true;
           break;
         default:
           break;

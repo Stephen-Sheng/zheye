@@ -82,6 +82,15 @@ const store = createStore<GlobalDataProps>({
       localStorage.setItem("token", token);
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     },
+    logout(state) {
+      localStorage.removeItem("token");
+      state.user = {
+        email: "",
+        isLogin: false,
+        column: "",
+        nickName: "",
+      };
+    },
   },
   actions: {
     fetchColumns({ commit }) {

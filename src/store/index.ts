@@ -90,6 +90,8 @@ const store = createStore<GlobalDataProps>({
         column: "",
         nickName: "",
       };
+      state.token = "";
+      Reflect.deleteProperty(axios.defaults.headers.common, "Authorization");
     },
   },
   actions: {

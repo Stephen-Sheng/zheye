@@ -1,3 +1,9 @@
+<script lang="ts">
+// 使用普通的 <script> 来声明选项
+export default {
+  inheritAttrs: false,
+};
+</script>
 <script setup lang="ts">
 import axios from "axios";
 import { ref } from "vue";
@@ -55,7 +61,11 @@ const handleFileChange = (e: Event) => {
 
 <template>
   <div class="file-upload">
-    <div class="file-upload-container" @click.prevent="triggerUpload">
+    <div
+      v-bind="$attrs"
+      class="file-upload-container"
+      @click.prevent="triggerUpload"
+    >
       <slot v-if="fileStatus === 'loading'" name="loading">
         <button class="btn btn-primary" disabled>正在上传...</button>
       </slot>

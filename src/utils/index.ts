@@ -1,7 +1,6 @@
 import mitt from "mitt";
 import type { ValidateFunc } from "@/components/ValidateForm.vue";
 import type { ClearFunc } from "@/components/ValidateInput.vue";
-import type { ImageProps } from "@/store";
 type Events = {
   "form-item-created": ValidateFunc;
   "form-item-clear": ClearFunc;
@@ -12,7 +11,8 @@ export interface PostProps {
   title: string;
   excerpt?: string;
   content?: string;
-  image?: ImageProps;
+  image?: string;
   createdAt?: string;
   column: string;
+  author?: string;
 }

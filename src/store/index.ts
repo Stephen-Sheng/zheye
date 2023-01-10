@@ -115,6 +115,9 @@ const store = createStore<GlobalDataProps>({
         return dispatch("fetchCurrentUser");
       });
     },
+    createPost({ commit }, payload) {
+      return postAndCommit("/posts", payload, "createPost", commit);
+    },
   },
   getters: {
     getColumnById: (state) => (currentId: string) => {

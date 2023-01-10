@@ -8,11 +8,11 @@ type Events = {
 };
 export const emitter = mitt<Events>();
 export interface PostProps {
-  _id: string;
+  _id?: string;
   title: string;
   excerpt?: string;
   content?: string;
   image?: ImageProps;
-  createdAt: string;
+  createdAt?: string;
   column: string;
 }

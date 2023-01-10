@@ -19,17 +19,15 @@ const contentRules: RulesProp = [
 ];
 const onFormSubmit = (result: boolean) => {
   if (result) {
-    const { columnId } = store.state.user;
-    if (columnId) {
+    const { column } = store.state.user;
+    if (column) {
       const newPost: PostProps = {
-        _id: new Date().getTime().toString(),
         title: titleVal.value,
         content: contentVal.value,
-        column: String(columnId),
-        createdAt: new Date().toLocaleString(),
+        column,
       };
       store.commit("createPost", newPost);
-      router.push(`/column/${columnId}`);
+      router.push(`/column/${column}`);
     }
   }
 };

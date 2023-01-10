@@ -3,11 +3,27 @@ import { useStore } from "vuex";
 import ColumnList from "@/components/ColumnList.vue";
 import type { GlobalDataProps } from "@/store";
 import { computed, onMounted } from "vue";
+import Uploader from "@/components/Uploader.vue";
+import createMessage from "@/components/createMessage";
+import type { ResponseType, ImageProps } from "@/store";
 const store = useStore<GlobalDataProps>();
 const list = computed(() => store.state.columns);
 onMounted(() => {
   store.dispatch("fetchColumns");
 });
+const beforeUpload = (file: File) => {
+  const isJPG = file.type === "image/jpeg";
+  if (!isJPG) createMessage("error", "格式不对", 2000);
+  return isJPG;
+};
+const onFileUploaded = (rawData: ResponseType<ImageProps>) => {
+  createMessage("success", `上传图片ID ${rawData.data._id}`, 2000);
+};
+
+const onFileUploadedFailed = (error: any) => {
+  console.log(error);
+  // createMessage('error', error)
+};
 </script>
 
 <template>
@@ -23,6 +39,16 @@ onMounted(() => {
         </div>
       </div>
     </section>
+    <Uploader
+      action="/upload"
+      :before-upload="beforeUpload"
+      @file-uploaded="onFileUploaded"
+      @file-uploaded-error="onFileUploadedFailed"
+    >
+      <template #uploaded="slotProps">
+        <img :src="slotProps.uploadedData.data.url" width="500" />
+      </template>
+    </Uploader>
     <h4 class="font-weight-bold text-center">发现精彩</h4>
     <column-list :list="list"></column-list>
   </div>

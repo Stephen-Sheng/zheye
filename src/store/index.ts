@@ -129,4 +129,10 @@ export interface GlobalErrorProps {
   message?: string;
 }
 
+export interface ResponseType<P = {}> {
+  code: number;
+  msg: string;
+  data: P;
+}
+
 export default store;

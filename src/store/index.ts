@@ -94,16 +94,16 @@ const store = createStore<GlobalDataProps>({
   },
   actions: {
     fetchColumns({ commit }) {
-      getAndCommit("/columns", "fetchColumns", commit);
+      return getAndCommit("/columns", "fetchColumns", commit);
     },
     fetchColumn({ commit }, cid) {
-      getAndCommit(`/columns/${cid}`, "fetchColumn", commit);
+      return getAndCommit(`/columns/${cid}`, "fetchColumn", commit);
     },
     fetchPosts({ commit }, cid) {
-      getAndCommit(`/columns/${cid}/posts`, "fetchPosts", commit);
+      return getAndCommit(`/columns/${cid}/posts`, "fetchPosts", commit);
     },
     fetchCurrentUser({ commit }) {
-      getAndCommit("/user/current", "fetchCurrentUser", commit);
+      return getAndCommit("/user/current", "fetchCurrentUser", commit);
     },
     login({ commit }, payload) {
       return postAndCommit("/user/login", payload, "login", commit);

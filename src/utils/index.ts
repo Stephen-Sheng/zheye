@@ -1,18 +1,18 @@
 import mitt from "mitt";
 import type { ValidateFunc } from "@/components/ValidateForm.vue";
 import type { ClearFunc } from "@/components/ValidateInput.vue";
-import type { ImageProps } from "@/store";
 type Events = {
   "form-item-created": ValidateFunc;
   "form-item-clear": ClearFunc;
 };
 export const emitter = mitt<Events>();
 export interface PostProps {
-  _id: string;
+  _id?: string;
   title: string;
   excerpt?: string;
   content?: string;
-  image?: ImageProps;
-  createdAt: string;
+  image?: string;
+  createdAt?: string;
   column: string;
+  author?: string;
 }

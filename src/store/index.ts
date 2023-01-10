@@ -90,20 +90,22 @@ const store = createStore<GlobalDataProps>({
         column: "",
         nickName: "",
       };
+      state.token = "";
+      Reflect.deleteProperty(axios.defaults.headers.common, "Authorization");
     },
   },
   actions: {
     fetchColumns({ commit }) {
-      getAndCommit("/columns", "fetchColumns", commit);
+      return getAndCommit("/columns", "fetchColumns", commit);
     },
     fetchColumn({ commit }, cid) {
-      getAndCommit(`/columns/${cid}`, "fetchColumn", commit);
+      return getAndCommit(`/columns/${cid}`, "fetchColumn", commit);
     },
     fetchPosts({ commit }, cid) {
-      getAndCommit(`/columns/${cid}/posts`, "fetchPosts", commit);
+      return getAndCommit(`/columns/${cid}/posts`, "fetchPosts", commit);
     },
     fetchCurrentUser({ commit }) {
-      getAndCommit("/user/current", "fetchCurrentUser", commit);
+      return getAndCommit("/user/current", "fetchCurrentUser", commit);
     },
     login({ commit }, payload) {
       return postAndCommit("/user/login", payload, "login", commit);
@@ -112,6 +114,9 @@ const store = createStore<GlobalDataProps>({
       return dispatch("login", loginData).then(() => {
         return dispatch("fetchCurrentUser");
       });
+    },
+    createPost({ commit }, payload) {
+      return postAndCommit("/posts", payload, "createPost", commit);
     },
   },
   getters: {
@@ -127,6 +132,12 @@ const store = createStore<GlobalDataProps>({
 export interface GlobalErrorProps {
   status: boolean;
   message?: string;
+}
+
+export interface ResponseType<P = {}> {
+  code: number;
+  msg: string;
+  data: P;
 }
 
 export default store;

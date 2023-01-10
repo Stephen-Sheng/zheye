@@ -26,7 +26,7 @@ const onFormSubmit = (result: boolean) => {
     store
       .dispatch("loginAndFetch", payload)
       .then(() => {
-        createMessage("success", "登录成功！");
+        createMessage("success", "登录成功！", 2000);
         setTimeout(() => router.push("/"), 1000);
       })
       .catch((e) => {

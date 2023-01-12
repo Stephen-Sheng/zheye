@@ -5,6 +5,7 @@ import { useStore } from "vuex";
 import type { GlobalDataProps } from "@/store";
 import { computed, onMounted } from "vue";
 import type { ColumnProps } from "@/components/ColumnList.vue";
+import avatar from "@/assets/avatar.jpeg";
 const store = useStore<GlobalDataProps>();
 const route = useRoute();
 const currentId = route.params.id;
@@ -26,9 +27,9 @@ onMounted(() => {
     >
       <div class="col-3 text-center">
         <img
-          :src="column.avatar?.url"
+          :src="column.avatar ? column.avatar.url : avatar"
           :alt="column.title"
-          class="rounded-circle border w-75"
+          class="rounded-circle border w-50"
         />
       </div>
       <div class="col-9">
@@ -39,3 +40,4 @@ onMounted(() => {
     <PostList :list="list"></PostList>
   </div>
 </template>
+<style scoped></style>

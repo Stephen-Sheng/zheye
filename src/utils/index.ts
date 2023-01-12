@@ -1,3 +1,4 @@
+import type { ImageProps } from "@/store/index";
 import mitt from "mitt";
 import type { ValidateFunc } from "@/components/ValidateForm.vue";
 import type { ClearFunc } from "@/components/ValidateInput.vue";
@@ -11,7 +12,7 @@ export interface PostProps {
   title: string;
   excerpt?: string;
   content?: string;
-  image?: string;
+  image?: ImageProps;
   createdAt?: string;
   column: string;
   author?: string;

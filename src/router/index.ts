@@ -4,6 +4,7 @@ import Login from "@/views/Login.vue";
 import ColumnDetail from "@/views/ColumnDetail.vue";
 import CreatePost from "@/views/CreatePost.vue";
 import Signup from "@/views/Signup.vue";
+import PostDetail from "@/views/PostDetail.vue";
 import axios from "axios";
 import store from "@/store";
 const routerHistory = createWebHistory();
@@ -31,6 +32,11 @@ export const router = createRouter({
       path: "/column/:id",
       name: "column",
       component: ColumnDetail,
+    },
+    {
+      path: "/post/:id",
+      name: "post",
+      component: PostDetail,
     },
     {
       path: "/create",

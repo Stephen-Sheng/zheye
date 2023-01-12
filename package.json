@@ -12,9 +12,11 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@types/markdown-it": "^12.2.3",
     "axios": "^1.2.2",
     "bootstrap": "^5.2.3",
     "core-js": "^3.8.3",
+    "markdown-it": "^13.0.1",
     "mitt": "^3.0.0",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6",

@@ -17,6 +17,7 @@ export interface ImageProps {
   _id?: string;
   url?: string;
   createdAt?: string;
+  fitUrl?: string;
 }
 
 const getAndCommit = async (
@@ -67,6 +68,9 @@ const store = createStore<GlobalDataProps>({
     fetchPosts(state, rawData) {
       state.posts = rawData.data.list;
     },
+    fetchPost(state, rawData) {
+      state.posts = [rawData.data];
+    },
     fetchCurrentUser(state, rawData) {
       state.user = { isLogin: true, ...rawData.data };
     },
@@ -104,6 +108,9 @@ const store = createStore<GlobalDataProps>({
     fetchPosts({ commit }, cid) {
       return getAndCommit(`/columns/${cid}/posts`, "fetchPosts", commit);
     },
+    fetchPost({ commit }, pid) {
+      return getAndCommit(`/posts/${pid}`, "fetchPost", commit);
+    },
     fetchCurrentUser({ commit }) {
       return getAndCommit("/user/current", "fetchCurrentUser", commit);
     },
@@ -125,6 +132,9 @@ const store = createStore<GlobalDataProps>({
     },
     getPostsByCid: (state) => (cid: string) => {
       return state.posts.filter((post) => post.column === cid);
+    },
+    getCurrentPost: (state) => (pid: string) => {
+      return state.posts.find((item) => item._id === pid);
     },
   },
 });

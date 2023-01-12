@@ -1,11 +1,21 @@
 <script setup lang="ts">
 import type { PostProps } from "@/utils";
+import { useRouter } from "vue-router";
 defineProps<{ list: PostProps[] }>();
+const router = useRouter();
+const handleClickPost = (pid: string) => {
+  router.push(`/post/${pid}`);
+};
 </script>
 
 <template>
   <div class="post-list">
-    <article v-for="post in list" :key="post._id" class="card mb-3 shadow-sm">
+    <article
+      @click="() => handleClickPost(post._id as string)"
+      v-for="post in list"
+      :key="post._id"
+      class="card mb-3 shadow-sm"
+    >
       <div class="card-body">
         <h4>{{ post.title }}</h4>
         <div class="row my-3 align-items-center">
@@ -25,7 +35,10 @@ defineProps<{ list: PostProps[] }>();
 </template>
 <style scoped>
 .card-body img {
-  width: 50px;
-  height: 50px;
+  width: 50%;
+  height: 50%;
+}
+.post-list article {
+  cursor: pointer;
 }
 </style>

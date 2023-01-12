@@ -6,11 +6,17 @@ import ValidateInput from "@/components/ValidateInput.vue";
 import ValidateForm from "@/components/ValidateForm.vue";
 import type { RulesProp } from "@/components/ValidateInput.vue";
 import type { GlobalDataProps, ImageProps } from "@/store";
-import type { PostProps } from "@/utils";
 import { beforeUploadCheck } from "@/utils/helper";
 import Uploader from "@/components/Uploader.vue";
 import createMessage from "@/components/createMessage";
 import type { ResponseType } from "@/store";
+interface NewPostProps {
+  title: string;
+  content?: string;
+  image?: string;
+  column: string;
+  author?: string;
+}
 const titleVal = ref("");
 const router = useRouter();
 const store = useStore<GlobalDataProps>();
@@ -41,7 +47,7 @@ const onFormSubmit = (result: boolean) => {
   if (result) {
     const { column, _id } = store.state.user;
     if (column) {
-      const newPost: PostProps = {
+      const newPost: NewPostProps = {
         title: titleVal.value,
         content: contentVal.value,
         column,

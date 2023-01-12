@@ -10,7 +10,6 @@ const store = useStore<GlobalDataProps>();
 const currentUser = computed(() => store.state.user);
 const isLoading = computed(() => store.state.loading);
 const error = computed(() => store.state.error);
-
 watch(
   () => error.value.status,
   () => {

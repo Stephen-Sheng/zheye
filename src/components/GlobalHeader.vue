@@ -34,7 +34,7 @@ const logout = () => {
         >
       </li>
       <li class="list-inline-item">
-        <RouterLink to="/login" class="btn btn-outline-light my-2"
+        <RouterLink to="/signup" class="btn btn-outline-light my-2"
           >注册</RouterLink
         >
       </li>
@@ -44,6 +44,13 @@ const logout = () => {
         <DropdownMenu :title="user.nickName">
           <DropdownItem>
             <RouterLink class="dropdown-item" to="/create">新建文章</RouterLink>
+          </DropdownItem>
+          <DropdownItem>
+            <RouterLink
+              class="dropdown-item"
+              :to="`/column/${store.state.user.column}`"
+              >我的专栏</RouterLink
+            >
           </DropdownItem>
           <DropdownItem disabled
             ><a class="dropdown-item" href="#">编辑资料</a></DropdownItem

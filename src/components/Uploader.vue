@@ -6,19 +6,32 @@ export default {
 </script>
 <script setup lang="ts">
 import axios from "axios";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import type { ResponseType, ImageProps } from "@/store";
 
 type UploadStatus = "ready" | "loading" | "success" | "error";
 type CheckFunction = (file: File) => boolean;
-const props = defineProps<{ action: string; beforeUpload?: CheckFunction }>();
+const props = defineProps<{
+  action: string;
+  beforeUpload?: CheckFunction;
+  uploaded?: { data: ImageProps };
+}>();
 const emits = defineEmits<{
   (e: "file-uploaded", data: ResponseType<ImageProps>): void;
   (e: "file-uploaded-error", error: any): void;
 }>();
 const fileInput = ref<null | HTMLInputElement>(null);
-const fileStatus = ref<UploadStatus>("ready");
-const uploadedData = ref();
+const fileStatus = ref<UploadStatus>(props.uploaded ? "success" : "ready");
+const uploadedData = ref(props.uploaded);
+watch(
+  () => props.uploaded,
+  (newVal) => {
+    if (newVal) {
+      fileStatus.value = "success";
+      uploadedData.value = newVal;
+    }
+  }
+);
 const triggerUpload = () => {
   if (fileInput.value) {
     fileInput.value.click();

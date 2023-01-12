@@ -93,6 +93,11 @@ const store = createStore<GlobalDataProps>({
         }
       });
     },
+    deletePost(state, { data }) {
+      state.posts = state.posts.filter((post) => {
+        return post._id !== data._id;
+      });
+    },
     fetchCurrentUser(state, rawData) {
       state.user = { isLogin: true, ...rawData.data };
     },
@@ -151,6 +156,11 @@ const store = createStore<GlobalDataProps>({
       return asyncAndCommit(`/posts/${id}`, "updatePost", commit, {
         method: "PATCH",
         data: payload,
+      });
+    },
+    deletePost({ commit }, id) {
+      return asyncAndCommit(`/posts/${id}`, "deletePost", commit, {
+        method: "DELETE",
       });
     },
   },

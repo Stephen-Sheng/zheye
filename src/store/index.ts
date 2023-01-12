@@ -1,9 +1,10 @@
 import { createStore } from "vuex";
 import type { Commit } from "vuex";
 import type { ColumnProps } from "@/components/ColumnList.vue";
-import type { PostProps } from "@/utils";
 import type { UserProps } from "@/components/GlobalHeader.vue";
 import axios from "axios";
+import type { AxiosRequestConfig } from "axios";
+import type { PostProps } from "@/utils";
 
 export interface GlobalDataProps {
   columns: ColumnProps[];
@@ -41,6 +42,17 @@ const postAndCommit = async (
   return data;
 };
 
+const asyncAndCommit = async (
+  url: string,
+  mutationName: string,
+  commit: Commit,
+  config: AxiosRequestConfig = { method: "GET" }
+) => {
+  const { data } = await axios(url, config);
+  commit(mutationName, data);
+  return data;
+};
+
 const store = createStore<GlobalDataProps>({
   state: {
     columns: [],
@@ -70,6 +82,16 @@ const store = createStore<GlobalDataProps>({
     },
     fetchPost(state, rawData) {
       state.posts = [rawData.data];
+    },
+    updatePost(state, { data }) {
+      state.posts = state.posts.map((post) => {
+        if (post._id === data._id) {
+          console.log(data);
+          return data;
+        } else {
+          return post;
+        }
+      });
     },
     fetchCurrentUser(state, rawData) {
       state.user = { isLogin: true, ...rawData.data };
@@ -124,6 +146,12 @@ const store = createStore<GlobalDataProps>({
     },
     createPost({ commit }, payload) {
       return postAndCommit("/posts", payload, "createPost", commit);
+    },
+    updatePost({ commit }, { id, payload }) {
+      return asyncAndCommit(`/posts/${id}`, "updatePost", commit, {
+        method: "PATCH",
+        data: payload,
+      });
     },
   },
   getters: {

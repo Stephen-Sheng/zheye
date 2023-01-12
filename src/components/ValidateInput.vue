@@ -5,7 +5,7 @@ export default {
 };
 </script>
 <script setup lang="ts">
-import { onMounted, reactive } from "vue";
+import { computed, onMounted, reactive } from "vue";
 import { emitter } from "@/utils/index";
 export interface RuleProp {
   type: "required" | "email" | "custom";
@@ -28,7 +28,10 @@ const emit = defineEmits<{
 
 const emailReg = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const inputRef = reactive({
-  val: props.modelValue || "",
+  val: computed({
+    get: () => props.modelValue || "",
+    set: (val) => emit("update:modelValue", val),
+  }),
   error: false,
   message: "",
 });
@@ -61,11 +64,6 @@ const validateInput = () => {
   }
   return true;
 };
-const updateValue = (e: Event) => {
-  const targetVal = (e.target as HTMLInputElement).value;
-  inputRef.val = targetVal;
-  emit("update:modelValue", targetVal);
-};
 const resetValue = () => {
   inputRef.val = "";
 };
@@ -78,8 +76,7 @@ defineExpose({ validateInput });
       v-bind="$attrs"
       :class="{ 'is-invalid': inputRef.error }"
       class="form-control"
-      :value="inputRef.val"
-      @input="updateValue"
+      v-model="inputRef.val"
       @blur="validateInput"
     />
     <textarea
@@ -87,8 +84,7 @@ defineExpose({ validateInput });
       v-bind="$attrs"
       :class="{ 'is-invalid': inputRef.error }"
       class="form-control"
-      :value="inputRef.val"
-      @input="updateValue"
+      v-model="inputRef.val"
       @blur="validateInput"
     />
     <span v-if="inputRef.error" class="invalid-feedback">

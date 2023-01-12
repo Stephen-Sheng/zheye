@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import type { GlobalDataProps, ImageProps } from "@/store";
 import { computed, onMounted, type ComputedRef } from "vue";
@@ -7,7 +7,7 @@ import { generateFitUrl } from "@/utils/helper";
 import MarkdownIt from "markdown-it";
 import type { UserProfileProps } from "@/components/UserProfile.vue";
 import UserProfile from "@/components/UserProfile.vue";
-interface PostDetailProps {
+export interface PostDetailProps {
   _id: string;
   title: string;
   content: string;
@@ -24,8 +24,18 @@ const currentId = route.params.id;
 const post: ComputedRef<PostDetailProps> = computed(() =>
   store.getters.getCurrentPost(currentId)
 );
+const showEditArea = computed(() => {
+  const { isLogin, _id } = store.state.user;
+  if (!isLogin) return false;
+  if (post.value && post.value.author) {
+    const postAuthor = post.value.author;
+    if (postAuthor._id === _id) return true;
+    else return false;
+  }
+  return false;
+});
 onMounted(() => {
-  store.dispatch("fetchPost", currentId);
+  store.dispatch("fetchPost", currentId).then(() => {});
 });
 const md = new MarkdownIt();
 const imageFitUrl = computed(() => {
@@ -66,6 +76,15 @@ const currentHTML = computed(() => {
         >
       </div>
       <div v-html="currentHTML"></div>
+      <div v-if="showEditArea" class="btn-group mt-5">
+        <RouterLink
+          :to="{ name: 'create', query: { id: post._id } }"
+          type="button"
+          class="btn btn-success"
+          >编辑</RouterLink
+        >
+        <button type="button" class="btn btn-danger">删除</button>
+      </div>
     </article>
   </div>
 </template>

@@ -4,7 +4,7 @@ import { useStore } from "vuex";
 import type { GlobalDataProps, ImageProps } from "@/store";
 import { computed, onMounted, ref, type ComputedRef } from "vue";
 import { generateFitUrl } from "@/utils/helper";
-import MarkdownIt from "markdown-it";
+import { marked } from "marked";
 import type { UserProfileProps } from "@/components/UserProfile.vue";
 import UserProfile from "@/components/UserProfile.vue";
 import Modal from "@/components/Modal.vue";
@@ -41,7 +41,6 @@ const showEditArea = computed(() => {
 onMounted(() => {
   store.dispatch("fetchPost", currentId).then(() => {});
 });
-const md = new MarkdownIt();
 const imageFitUrl = computed(() => {
   if (post.value.image) {
     generateFitUrl(post.value.image, 1000, 1000, ["jpeg"]);
@@ -53,7 +52,7 @@ const imageFitUrl = computed(() => {
 const currentHTML = computed(() => {
   if (post.value && post.value.content) {
     const { isHTML, content } = post.value;
-    return isHTML ? content : md.render(content);
+    return isHTML ? content : marked.parse(content);
   }
   return null;
 });

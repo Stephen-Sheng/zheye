@@ -3,6 +3,7 @@ import App from "./App.vue";
 import { router } from "@/router";
 import store from "@/store";
 import axios from "axios";
+import "easymde/dist/easymde.min.css";
 
 const ICode = "7A3566BE07F25452";
 axios.defaults.baseURL = "http://apis.imooc.com/api/";

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, reactive } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import ValidateInput from "@/components/ValidateInput.vue";
@@ -11,6 +11,8 @@ import Uploader from "@/components/Uploader.vue";
 import createMessage from "@/components/createMessage";
 import type { ResponseType } from "@/store";
 import type { PostProps } from "@/utils";
+import Editor from "@/components/Editor.vue";
+import type { Options } from "easymde";
 interface NewPostProps {
   title: string;
   content?: string;
@@ -28,10 +30,24 @@ let imageId = "";
 const titleRules: RulesProp = [
   { type: "required", message: "文章标题不能为空" },
 ];
+const editorOptions: Options = {
+  spellChecker: false,
+};
 const contentVal = ref("");
-const contentRules: RulesProp = [
-  { type: "required", message: "文章详情不能为空" },
-];
+const editorStatus = reactive({
+  isValid: true,
+  message: "",
+});
+const checkEditor = () => {
+  if (contentVal.value.trim() === "") {
+    editorStatus.isValid = false;
+    editorStatus.message = "文章详情不能为空";
+  } else {
+    editorStatus.isValid = true;
+    editorStatus.message = "";
+  }
+};
+
 const handleFileUploaded = (rawData: ResponseType<ImageProps>) => {
   if (rawData.data._id) {
     imageId = rawData.data._id;
@@ -48,7 +64,8 @@ const uploadCheck = (file: File) => {
   return passed;
 };
 const onFormSubmit = (result: boolean) => {
-  if (result) {
+  checkEditor();
+  if (result && editorStatus.isValid) {
     const { column, _id } = store.state.user;
     if (column) {
       const newPost: NewPostProps = {
@@ -131,14 +148,15 @@ onMounted(() => {
       </div>
       <div class="mb-3">
         <label class="form-label">文章详情：</label>
-        <validate-input
-          type="text"
-          rows="10"
-          placeholder="请输入文章详情"
-          :rules="contentRules"
+        <Editor
+          :class="{ 'is-invalid': !editorStatus.isValid }"
           v-model="contentVal"
-          tag="textarea"
+          :options="editorOptions"
+          @blur="checkEditor"
         />
+        <span v-if="!editorStatus.isValid" class="invalid-feedback mt-1">
+          {{ editorStatus.message }}
+        </span>
       </div>
       <template #submit>
         <button class="btn btn-primary btn-large">

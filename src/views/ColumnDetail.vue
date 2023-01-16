@@ -23,11 +23,12 @@ const { isLastPage, loadMorePage } = useLoadMore(
   total as ComputedRef<number>,
   {
     cid: currentId,
-    currentPage: currentPage.value === 1 ? currentPage.value + 1 : 2,
+    currentPage: currentPage.value ? currentPage.value + 1 : 2,
     pageSize: 5,
   }
 );
 onMounted(() => {
+  console.log(isLastPage.value);
   store.dispatch("fetchColumn", currentId);
   store.dispatch("fetchPosts", { cid: currentId, currentPage: 1, pageSize: 5 });
 });

@@ -215,7 +215,7 @@ const store = createStore<GlobalDataProps>({
     getPostsCurrentPageById: (state) => (cid: string) => {
       if (state.posts.loadedColumns[cid]) {
         return state.posts.loadedColumns[cid].currentPage;
-      } else return 1;
+      } else return 0;
     },
   },
 });

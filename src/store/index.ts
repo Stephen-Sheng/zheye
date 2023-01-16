@@ -5,14 +5,19 @@ import type { UserProps } from "@/components/GlobalHeader.vue";
 import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
 import type { PostProps } from "@/utils";
+import { arrToObj, ObjToArr } from "@/utils/helper";
 
 export interface GlobalDataProps {
-  columns: ColumnProps[];
-  posts: PostProps[];
+  columns: { data: ListProps<ColumnProps>; isLoaded: boolean };
+  posts: { data: ListProps<PostProps>; loadedColumns: string[] };
   user: UserProps;
   loading: boolean;
   token: string;
   error: GlobalErrorProps;
+}
+
+export interface ListProps<P> {
+  [id: string]: P;
 }
 export interface ImageProps {
   _id?: string;
@@ -20,43 +25,26 @@ export interface ImageProps {
   createdAt?: string;
   fitUrl?: string;
 }
-
-const getAndCommit = async (
-  url: string,
-  mutationName: string,
-  commit: Commit
-) => {
-  const { data } = await axios.get(url);
-  commit(mutationName, data);
-  return data;
-};
-
-const postAndCommit = async (
-  url: string,
-  payload: any,
-  mutationName: string,
-  commit: Commit
-) => {
-  const { data } = await axios.post(url, payload);
-  commit(mutationName, data);
-  return data;
-};
-
 const asyncAndCommit = async (
   url: string,
   mutationName: string,
   commit: Commit,
-  config: AxiosRequestConfig = { method: "GET" }
+  config: AxiosRequestConfig = { method: "GET" },
+  extraData?: any
 ) => {
   const { data } = await axios(url, config);
-  commit(mutationName, data);
+  if (extraData) {
+    commit(mutationName, { data, extraData });
+  } else {
+    commit(mutationName, data);
+  }
   return data;
 };
 
 const store = createStore<GlobalDataProps>({
   state: {
-    columns: [],
-    posts: [],
+    columns: { data: {}, isLoaded: false },
+    posts: { data: {}, loadedColumns: [] },
     user: {
       isLogin: false,
     },
@@ -65,38 +53,31 @@ const store = createStore<GlobalDataProps>({
     error: { status: false },
   },
   mutations: {
-    // login(state) {
-    //   state.user = { ...state.user, isLogin: true, name: "Yutong" };
-    // },
     createPost(state, newPost) {
-      state.posts.push(newPost);
+      state.posts.data[newPost._id] = newPost;
     },
     fetchColumns(state, rawData) {
-      state.columns = rawData.data.list;
+      state.columns.data = arrToObj(rawData.data.list);
+      state.columns.isLoaded = true;
     },
     fetchColumn(state, rawData) {
-      state.columns = [rawData.data];
+      state.columns.data[rawData.data._id] = rawData.data;
     },
-    fetchPosts(state, rawData) {
-      state.posts = rawData.data.list;
+    fetchPosts(state, { data: rawData, extraData: columnId }) {
+      state.posts.data = {
+        ...state.posts.data,
+        ...arrToObj(rawData.data.list),
+      };
+      state.posts.loadedColumns.push(columnId);
     },
     fetchPost(state, rawData) {
-      state.posts = [rawData.data];
+      state.posts.data[rawData.data._id] = rawData.data;
     },
     updatePost(state, { data }) {
-      state.posts = state.posts.map((post) => {
-        if (post._id === data._id) {
-          console.log(data);
-          return data;
-        } else {
-          return post;
-        }
-      });
+      state.posts.data[data._id] = data;
     },
     deletePost(state, { data }) {
-      state.posts = state.posts.filter((post) => {
-        return post._id !== data._id;
-      });
+      Reflect.deleteProperty(state.posts.data, data._id);
     },
     fetchCurrentUser(state, rawData) {
       state.user = { isLogin: true, ...rawData.data };
@@ -126,23 +107,43 @@ const store = createStore<GlobalDataProps>({
     },
   },
   actions: {
-    fetchColumns({ commit }) {
-      return getAndCommit("/columns", "fetchColumns", commit);
+    fetchColumns({ state, commit }) {
+      if (!state.columns.isLoaded) {
+        return asyncAndCommit("/columns", "fetchColumns", commit);
+      }
     },
-    fetchColumn({ commit }, cid) {
-      return getAndCommit(`/columns/${cid}`, "fetchColumn", commit);
+    fetchColumn({ state, commit }, cid) {
+      if (!state.columns.data[cid]) {
+        return asyncAndCommit(`/columns/${cid}`, "fetchColumn", commit);
+      }
     },
-    fetchPosts({ commit }, cid) {
-      return getAndCommit(`/columns/${cid}/posts`, "fetchPosts", commit);
+    fetchPosts({ state, commit }, cid) {
+      if (!state.posts.loadedColumns.includes(cid)) {
+        return asyncAndCommit(
+          `/columns/${cid}/posts`,
+          "fetchPosts",
+          commit,
+          { method: "get" },
+          cid
+        );
+      }
     },
-    fetchPost({ commit }, pid) {
-      return getAndCommit(`/posts/${pid}`, "fetchPost", commit);
+    fetchPost({ state, commit }, pid) {
+      const currentPost = state.posts.data[pid];
+
+      if (!currentPost || !currentPost.content) {
+        return asyncAndCommit(`/posts/${pid}`, "fetchPost", commit);
+      }
+      return Promise.resolve({ data: currentPost });
     },
     fetchCurrentUser({ commit }) {
-      return getAndCommit("/user/current", "fetchCurrentUser", commit);
+      return asyncAndCommit("/user/current", "fetchCurrentUser", commit);
     },
     login({ commit }, payload) {
-      return postAndCommit("/user/login", payload, "login", commit);
+      return asyncAndCommit("/user/login", "login", commit, {
+        method: "POST",
+        data: payload,
+      });
     },
     loginAndFetch({ dispatch }, loginData) {
       return dispatch("login", loginData).then(() => {
@@ -150,7 +151,10 @@ const store = createStore<GlobalDataProps>({
       });
     },
     createPost({ commit }, payload) {
-      return postAndCommit("/posts", payload, "createPost", commit);
+      return asyncAndCommit("/posts", "createPost", commit, {
+        method: "POST",
+        data: payload,
+      });
     },
     updatePost({ commit }, { id, payload }) {
       return asyncAndCommit(`/posts/${id}`, "updatePost", commit, {
@@ -166,14 +170,15 @@ const store = createStore<GlobalDataProps>({
   },
   getters: {
     getColumnById: (state) => (currentId: string) => {
-      return state.columns.find((item) => item._id === currentId);
+      return state.columns.data[currentId];
     },
     getPostsByCid: (state) => (cid: string) => {
-      return state.posts.filter((post) => post.column === cid);
+      return ObjToArr(state.posts.data).filter((post) => post.column === cid);
     },
     getCurrentPost: (state) => (pid: string) => {
-      return state.posts.find((item) => item._id === pid);
+      return state.posts.data[pid];
     },
+    getColumns: (state) => ObjToArr(state.columns.data),
   },
 });
 

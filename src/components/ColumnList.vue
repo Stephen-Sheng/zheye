@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import columnImg from "@/assets/column.jpeg";
 import type { ImageProps } from "@/store";
+import { generateFitUrl } from "@/utils/helper";
 
 export interface ColumnProps {
   _id: string;
@@ -17,8 +18,7 @@ const columnList = computed(() => {
         url: columnImg,
       };
     } else {
-      column.avatar.url =
-        column.avatar.url + "?x-oss-process=image/resize,m_pad,h_50,w_50";
+      generateFitUrl(column.avatar, 50, 50);
     }
     return column;
   });
@@ -31,7 +31,7 @@ const columnList = computed(() => {
       <div class="card h-100 shadow-sm">
         <div class="card-body text-center">
           <img
-            :src="column.avatar?.url"
+            :src="column.avatar?.fitUrl"
             :alt="column.title"
             class="rounded-circle border border-light my-3"
           />

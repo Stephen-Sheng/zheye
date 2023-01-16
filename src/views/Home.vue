@@ -4,7 +4,7 @@ import ColumnList from "@/components/ColumnList.vue";
 import type { GlobalDataProps } from "@/store";
 import { computed, onMounted } from "vue";
 const store = useStore<GlobalDataProps>();
-const list = computed(() => store.state.columns);
+const list = computed(() => store.getters.getColumns);
 onMounted(() => {
   store.dispatch("fetchColumns");
 });

@@ -103,7 +103,7 @@ onMounted(() => {
       .dispatch("fetchPost", route.query.id)
       .then((rawData: ResponseType<PostProps>) => {
         const currentPost = rawData.data;
-        console.log(currentPost);
+        console.log(rawData);
         if (currentPost.image) {
           uploadedData.value = { data: currentPost.image };
         }

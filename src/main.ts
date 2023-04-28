@@ -5,7 +5,7 @@ import store from "@/store";
 import axios from "axios";
 import "easymde/dist/easymde.min.css";
 
-const ICode = "7A3566BE07F25452";
+const ICode = "21802ED02AD0ADA5";
 axios.defaults.baseURL = "http://apis.imooc.com/api/";
 axios.interceptors.request.use((config) => {
   config.params = { ...config.params, icode: ICode };
